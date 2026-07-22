@@ -12,3 +12,17 @@ const aliceTiming = {
 const alice1 = document.querySelector("#alice1");
 const alice2 = document.querySelector("#alice2");
 const alice3 = document.querySelector("#alice3");
+
+async function name() {
+  try {
+    await alice1.animate(aliceTumbling,aliceTiming).finished
+    await alice2.animate(aliceTumbling,aliceTiming).finished
+    await alice3.animate(aliceTumbling,aliceTiming).finished
+  }
+  catch {
+
+  }
+}
+
+name()
+
