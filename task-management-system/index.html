@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="header-section">
+            <h1>Tasks</h1>
+            <div class="stats">
+                <span id="total">Total: 3</span>
+                <span id="completed">Completed: 1</span>
+                <span id="pending">Pending: 2</span>
+            </div>
+        </header>
+
+        <form action="">
+            <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
+            
+            <div class="custom-select">
+                <div class="select-selected">Medium</div>
+                <ul class="select-items">
+                    <li class="low-option" data-value="Low">Low</li>
+                    <li class="medium-option" data-value="Medium">Medium</li>
+                    <li class="high-option" data-value="High">High</li>
+                </ul>
+                <input type="hidden" id="priority-selection" value="Medium">
+            </div>
+
+            <button type="submit" class="primary-btn">Add</button>
+        </form>
+        
+        <p id="empty-error" style="display: none;">Task cannot be empty</p>
+
+        <div class="control-bars">
+            <input type="search" id="search-task" placeholder="Search...">
+            <div class="filter-buttons">
+                <button id="filter-All" class="active">All</button>
+                <button id="filter-Pending">Pending</button>
+                <button id="filter-Completed">Completed</button>
+            </div>
+        </div>
+
+        <ul id="task-list" class="task-list">
+            <li class="task-item">
+                <input type="checkbox" class="custom-checkbox">
+                <span class="task-title">Design the minimal interface</span> 
+                <span class="badge high-priority">High</span>
+                <button type="button" class="delete-btn">Delete</button>
+            </li>
+            <li class="task-item">
+                <input type="checkbox" class="custom-checkbox" checked>
+                <span class="task-title completed">Initialize project files</span>
+                <span class="badge medium-priority">Medium</span>
+                <button type="button" class="delete-btn">Delete</button>
+            </li>
+            <li class="task-item">
+                <input type="checkbox" class="custom-checkbox">
+                <span class="task-title">Learn JavaScript arrays</span>
+                <span class="badge low-priority">Low</span>
+                <button type="button" class="delete-btn">Delete</button>
+            </li>
+        </ul>
+    </main>
+
+    <!-- Custom Dropdown Behavior Script -->
+    <script>
+        const selectSelected = document.querySelector('.select-selected');
+        const selectItems = document.querySelector('.select-items');
+        const hiddenInput = document.querySelector('#priority-selection');
+        
+        selectSelected.addEventListener('click', () => {
+            selectItems.classList.toggle('show');
+            selectSelected.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.select-items li').forEach(item => {
+            item.addEventListener('click', () => {
+                selectSelected.textContent = item.textContent;
+                hiddenInput.value = item.getAttribute('data-value');
+                selectItems.classList.remove('show');
+                selectSelected.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select')) {
+                selectItems.classList.remove('show');
+                selectSelected.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- App Logic Scripts -->
+    <script src="./js/validation.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/task.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
