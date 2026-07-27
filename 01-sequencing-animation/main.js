@@ -20,7 +20,7 @@ async function name() {
     await alice3.animate(aliceTumbling,aliceTiming).finished
   }
   catch {
-
+    
   }
 }
 

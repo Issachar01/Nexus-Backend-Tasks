@@ -8,9 +8,11 @@ const totalSpan = document.querySelector('#total');
 const completedSpan = document.querySelector('#completed');
 const pendingSpan = document.querySelector('#pending');
 const searchInput = document.querySelector('#search-task'); // Search input element
+const filterButtons = document.querySelectorAll('.filter-buttons button');
 
-// 2. Initialize our tasks array from localStorage (The Freezer!)
+// 2. Initialize our state
 let tasks = loadTasksFromStorage();
+let currentFilter = 'All'; // Track current active filter state
 
 // Function to update the stats on the screen
 function updateStats() {
@@ -23,7 +25,7 @@ function updateStats() {
     pendingSpan.textContent = `Pending: ${pending}`;
 }
 
-// Function to render tasks on the screen (takes an optional list so search can use it)
+// Function to render tasks on the screen
 function renderTasks(tasksToRender = tasks) {
     taskList.innerHTML = ''; // Clear current list
 
@@ -43,7 +45,7 @@ function renderTasks(tasksToRender = tasks) {
         checkbox.addEventListener('change', () => {
             tasks = toggleTaskStatus(tasks, task.id);
             saveTasksToStorage(tasks);
-            triggerSearchRefresh(); // Refresh view keeping search active
+            triggerSearchRefresh(); 
             updateStats();
         });
 
@@ -52,7 +54,7 @@ function renderTasks(tasksToRender = tasks) {
         deleteBtn.addEventListener('click', () => {
             tasks = deleteTask(tasks, task.id);
             saveTasksToStorage(tasks);
-            triggerSearchRefresh(); // Refresh view keeping search active
+            triggerSearchRefresh(); 
             updateStats();
         });
 
@@ -67,7 +69,7 @@ taskForm.addEventListener('submit', (e) => {
     const title = taskInput.value;
     const priority = priorityInput.value;
 
-    // Run our validator (from validation.js)
+    // Run validator
     const validation = validateTaskTitle(title, tasks);
 
     if (!validation.isValid) {
@@ -76,10 +78,9 @@ taskForm.addEventListener('submit', (e) => {
         return;
     }
 
-    // Hide error if valid
     emptyError.style.display = 'none';
 
-    // Create new task (from task.js)
+    // Create new task
     const newTask = createNewTask(title, priority);
     tasks.push(newTask);
 
@@ -99,15 +100,38 @@ searchInput.addEventListener('input', () => {
     triggerSearchRefresh();
 });
 
-// Helper function to filter tasks based on current search input value
+// 5. Listen for filter button clicks
+filterButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        // Remove active class from all buttons and add to clicked one
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Extract filter type from button id (e.g., "filter-Pending" -> "Pending")
+        currentFilter = e.target.id.replace('filter-', '');
+        
+        // Refresh the view
+        triggerSearchRefresh();
+    });
+});
+
+// Combined filter helper function (handles both category filter and search keyword)
 function triggerSearchRefresh() {
     const searchTerm = searchInput.value.toLowerCase();
     
-    const filteredTasks = tasks.filter(task => 
+    // Step 1: Filter by category (All, Pending, Completed)
+    let result = tasks.filter(task => {
+        if (currentFilter === 'Pending') return !task.completed;
+        if (currentFilter === 'Completed') return task.completed;
+        return true; // 'All'
+    });
+
+    // Step 2: Filter by search input keyword
+    result = result.filter(task => 
         task.title.toLowerCase().includes(searchTerm)
     );
 
-    renderTasks(filteredTasks);
+    renderTasks(result);
 }
 
 // Run initial render when page loads
