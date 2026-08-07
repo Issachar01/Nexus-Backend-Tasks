@@ -9,4 +9,5 @@ A curated collection of backend development projects, task solutions, and mini-a
 ```text
 Nexus-Backend-Tasks/
 ├── 01-sequencing-animation/    # Animation sequencing & custom search/filter logic
-└── task-management-system/     # Full-featured backend system for task management
+├── task-management-system/     # Full-featured backend system for task management
+└── product-inventory-api/      # RESTful product inventory API built with Node.js & Express
